@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+langchain
+langgraph
+python-dotenv
+langchain_tavily
+langchain-community
+
+pypdf
+pymupdf
+sentence-transformers
+faiss-cpu
+chromadb
+langchain_groq
+bs4
