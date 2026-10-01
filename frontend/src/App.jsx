@@ -16,7 +16,7 @@ function App() {
   const [chatHistory, setChatHistory] = useState([
     {
       id: 1,
-      title: "React project help",
+      title: "",
     },
   ]);
 
@@ -38,32 +38,31 @@ const handleSendMessage = async (message) => {
   ]);
 
   try {
+
     // const response = await sendQuery(
     //     {
     //       query: message,
     //     }
     //   );
 
-    const response = await fetch(
-      "http://127.0.0.1:8000/api/admission/chat/",
-      {
-        method: "POST",
 
-        headers: {
-          "Content-Type": "application/json",
-        },
+    const response = await fetch("http://127.0.0.1:8000/api/admission/chat/", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ query: message }),
+});
 
-        body: JSON.stringify({
-          query: message,
-        }),
-      }
-    );
+if (!response.ok) {
+  throw new Error(`Server error: ${response.status}`);
+}
 
-    const assistantMessage = {
-      id: Date.now() + 1,
-      role: "assistant",
-      content: response.data.answer,
-    };
+const data = await response.json();
+
+const assistantMessage = {
+  id: Date.now() + 1,
+  role: "assistant",
+  content: data.answer.answer,   // pipeline dict -> its "answer" string
+};
 
     setMessages((prev) => [
       ...prev,

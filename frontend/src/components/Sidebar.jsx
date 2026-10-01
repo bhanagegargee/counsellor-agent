@@ -20,7 +20,7 @@ function Sidebar({
           {!collapsed && (
             <div className="logo">
               <div className="logo-icon">✦</div>
-              <span>ChatGPT</span>
+              <span>CounsellorAGENT</span>
             </div>
           )}
 
@@ -51,7 +51,7 @@ function Sidebar({
           <div className="history-section">
 
             <div className="history-title">
-              Recent
+              
             </div>
 
             <div className="history-list">

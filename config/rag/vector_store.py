@@ -1,16 +1,18 @@
+import os
 import numpy as np
 import uuid
-from typing import List,  Any
-
-import os 
+from typing import List, Any
 import chromadb
 from chromadb.config import Settings
 
+# Absolute path anchored to this file: config/data/vector_store
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DEFAULT_PERSIST_DIR = os.path.join(BASE_DIR, "data", "vector_store")
+
 
 class VectorStore:
-    """Manages document embeddings in a ChromaDB vector store"""
-    
-    def __init__(self, collection_name: str = "pdf_documents", persist_directory: str = "../data/vector_store"):
+    def __init__(self, collection_name: str = "pdf_documents", persist_directory: str = DEFAULT_PERSIST_DIR):
+        
         """
         Initialize the vector store
         
