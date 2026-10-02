@@ -29,42 +29,39 @@ class RagRetriever :
 
         retrieved_doc =[]
 
-        try :
+        try:
+            results = self.vector_store.collection.query(
+                query_embeddings=[query_embeddings.tolist()],
+                n_results=top_k
+            )
 
-            results= self.vector_store.collection.query(query_embeddings=[query_embeddings.tolist()],
-                                                    n_results=top_k)
-            
-            #print(results)
-            if results["documents"] and results["documents"][0] :
-                documents =results["documents"][0]
-                metadatas= results["metadatas"][0]
-                distances =results["distances"][0]
-                ids=results["ids"][0]
+            if results["documents"] and results["documents"][0]:
+                documents = results["documents"][0]
+                metadatas = results["metadatas"][0]
+                distances = results["distances"][0]
+                ids = results["ids"][0]
 
-                for i, (doc_id,document,metadata,distance) in enumerate(zip(ids,documents,metadatas,distances)):
-                    # calculate teh similarity search for each result
-                    # similarity_score=1-distance
+                print("DISTANCES:", [round(d, 3) for d in distances])   # after distances exists
 
-                    # if similarity_score >= score_threshold:
-                    max_distance = 1.5
+                max_distance = 1.5
 
+                for i, (doc_id, document, metadata, distance) in enumerate(zip(ids, documents, metadatas, distances)):
                     if distance <= max_distance:
-                        retrieved_doc.append(
-                            {
-                                'doc_id':id,
-                                'content':document,
-                                'metadata':metadata,
-                                'distance':distance,
-                                'rank':i+1
-                            })
-                        
+                        retrieved_doc.append({
+                            'doc_id': doc_id,
+                            'content': document,
+                            'metadata': metadata,
+                            'distance': distance,
+                            'rank': i + 1
+                        })
+
                 print(f"Retrieved {len(retrieved_doc)} documents (after filtering)")
 
             else:
                 print("No documents found")
-            
+
             return retrieved_doc
-        
-        except Exception as e :
+
+        except Exception as e:
             print(f"Error during retrieval: {e}")
             return []
