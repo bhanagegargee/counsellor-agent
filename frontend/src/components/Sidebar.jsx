@@ -47,7 +47,7 @@ function Sidebar({
         </button>
 
         {/* History */}
-        {!collapsed && (
+        {/* {!collapsed && (
           <div className="history-section">
 
             <div className="history-title">
@@ -77,7 +77,7 @@ function Sidebar({
             </div>
 
           </div>
-        )}
+        )} */}
 
       </div>
 

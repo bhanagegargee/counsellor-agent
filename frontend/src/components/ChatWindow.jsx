@@ -17,8 +17,9 @@ function ChatWindow({ messages }) {
      
 
       <div className="messages-container">
-           <h2 >Admission Councelor Agent !</h2>
+           <h2>Your Helper Agent !</h2><br></br>
 
+        <div className="msg">
         {messages.map((message) => (
           <Message
             key={message.id}
@@ -26,6 +27,7 @@ function ChatWindow({ messages }) {
             content={message.content}
           />
         ))}
+        </div>
 
         <div ref={bottomRef} />
 
