@@ -70,6 +70,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+MIDDLEWARE.insert(2, "whitenoise.middleware.WhiteNoiseMiddleware")  # right after SecurityMiddleware
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
@@ -151,6 +154,8 @@ if os.getenv("FRONTEND_URL"):
     CORS_ALLOWED_ORIGINS.append(
         os.getenv("FRONTEND_URL")
     )
+
+CORS_ALLOWED_ORIGINS = [o for o in CORS_ALLOWED_ORIGINS if o]
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
