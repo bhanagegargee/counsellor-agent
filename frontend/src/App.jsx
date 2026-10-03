@@ -2,7 +2,7 @@ import { useState } from "react";
 import Sidebar from "./components/Sidebar";
 import ChatWindow from "./components/ChatWindow";
 import ChatInput from "./components/ChatInput";
-import {sendQuery} from "./services/api";
+
 import "./App.css";
 
 function App() {
@@ -26,63 +26,47 @@ function App() {
 const handleSendMessage = async (message) => {
   if (!message.trim()) return;
 
-  const userMessage = {
-    id: Date.now(),
-    role: "user",
-    content: message,
-  };
+  const userMessage = { id: Date.now(), role: "user", content: message };
+  const botId = Date.now() + 1;
 
+  // Show user message + "Thinking..." placeholder immediately
   setMessages((prev) => [
     ...prev,
     userMessage,
+    { id: botId, role: "assistant", content: "Thinking..." },
   ]);
+
+  const updateBot = (content) =>
+    setMessages((prev) =>
+      prev.map((m) => (m.id === botId ? { ...m, content } : m))
+    );
 
   try {
-
-    // const response = await sendQuery(
-    //     {
-    //       query: message,
-    //     }
-    //   );
-
-
     const response = await fetch("http://127.0.0.1:8000/api/admission/chat/", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ query: message }),
-});
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query: message }),
+    });
 
-if (!response.ok) {
-  throw new Error(`Server error: ${response.status}`);
-}
+    if (!response.ok || !response.body) {
+      throw new Error(`Server error: ${response.status}`);
+    }
 
-const data = await response.json();
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let text = "";
 
-const assistantMessage = {
-  id: Date.now() + 1,
-  role: "assistant",
-  content: data.answer.answer,   // pipeline dict -> its "answer" string
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      text += decoder.decode(value, { stream: true });
+      updateBot(text);   // replaces "Thinking..." with the first chunk
+    }
+  } catch (error) {
+    console.error("CHAT API ERROR:", error);
+    updateBot(`Error: ${error.message}`);
+  }
 };
-
-    setMessages((prev) => [
-      ...prev,
-      assistantMessage,
-    ]);
-
-  }catch (error) {
-  console.error("CHAT API ERROR:", error);
-
-  setMessages((prev) => [
-    ...prev,
-    {
-      id: Date.now() + 1,
-      role: "assistant",
-      content: `Error: ${error.message}`,
-    },
-  ]);
-}
-};
-
 
 
   // New chat
