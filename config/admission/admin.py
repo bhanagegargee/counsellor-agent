@@ -3,7 +3,7 @@ from django.contrib import admin, messages
 from django.utils import timezone
 
 from .models import PDFDocument
-from rag.ingest import ingest_pdf, remove_pdf_from_store
+# from rag.ingest import ingest_pdf, remove_pdf_from_store
 
 
 @admin.register(PDFDocument)
@@ -16,6 +16,7 @@ class PDFDocumentAdmin(admin.ModelAdmin):
     # Re-uploading a file means it needs indexing again
     def save_model(self, request, obj, form, change):
         if change and "file" in form.changed_data:
+            from rag.ingest import remove_pdf_from_store
             remove_pdf_from_store(pdf_id=obj.pk)
             obj.is_indexed = False
             obj.chunk_count = 0
@@ -24,6 +25,7 @@ class PDFDocumentAdmin(admin.ModelAdmin):
 
     @admin.action(description="Index selected PDFs into vector store")
     def index_selected_pdfs(self, request, queryset):
+        from rag.ingest import ingest_pdf
         for pdf in queryset:
             try:
                 count = ingest_pdf(pdf.file.path, pdf.pk)
@@ -41,10 +43,12 @@ class PDFDocumentAdmin(admin.ModelAdmin):
 
     # Keep the vector store in sync when PDFs are deleted
     def delete_model(self, request, obj):
+        from rag.ingest import remove_pdf_from_store
         remove_pdf_from_store(pdf_id=obj.pk, source_file=os.path.basename(obj.file.name))
         super().delete_model(request, obj)
 
     def delete_queryset(self, request, queryset):
+        from rag.ingest import remove_pdf_from_store
         for obj in queryset:
             remove_pdf_from_store(pdf_id=obj.pk, source_file=os.path.basename(obj.file.name))
         super().delete_queryset(request, queryset)
