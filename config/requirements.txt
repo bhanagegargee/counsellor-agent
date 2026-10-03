@@ -1,15 +1,16 @@
-fastapi
-uvicorn
-langchain
-langgraph
+Django
+djangorestframework
+django-cors-headers
 python-dotenv
-langchain_tavily
-langchain-community
+gunicorn
 
-pypdf
-pymupdf
+langchain
+langchain-core
+langchain-community
+langchain-text-splitters
+langchain-groq
+
 sentence-transformers
-faiss-cpu
 chromadb
-langchain_groq
-bs4
+pymupdf
+numpy
