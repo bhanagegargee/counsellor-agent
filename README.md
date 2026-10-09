@@ -1,5 +1,6 @@
 # Counsellor Agent: An Adaptable RAG-Powered AI Agent
 
+**live DEMO :** https://counsellor-agent.vercel.app/
 Counsellor Agent is an **adaptable, knowledge-driven AI agent**, not a fixed chatbot. It is built with **Retrieval-Augmented Generation (RAG)** using **LangChain**, a **Django** REST backend and a **React** frontend. The agent knows only what an administrator feeds it: upload documents through the Django admin panel, index them, and the agent answers questions grounded in that content, with citations to the source file and page.
 
 Because its knowledge comes from the data rather than from hard-coded logic, the same codebase can serve **any topic or organization**. Feed it hospital policies and it becomes a patient-help desk; feed it HR handbooks and it becomes an employee assistant; feed it course catalogues and it becomes a student advisor. Changing its domain is a matter of changing the documents and the persona prompt, not rewriting the application.
